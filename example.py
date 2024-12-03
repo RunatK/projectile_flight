@@ -1,6 +1,6 @@
 import numpy as np
 
-from projectile_flight.runge_kutta import RungeKutta4
+from src.runge_kutta import RungeKutta4
 from matplotlib import pyplot as plt
 
 
