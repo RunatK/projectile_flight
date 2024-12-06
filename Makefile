@@ -1,3 +1,5 @@
+# For deploy run command:
+# make version v=<VERSION>
 version:
     @poetry version $(v)
     @git add pyproject.toml
