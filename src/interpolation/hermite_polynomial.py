@@ -1,7 +1,5 @@
 from typing import Iterable
 
-from .runge_kutta import RungeKutta4
-
 
 class HermitePolynomial:
     def run(self, t: Iterable[float], point_1: tuple[float, float, float], point_2: tuple[float, float, float]):

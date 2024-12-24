@@ -17,6 +17,8 @@ class ChordMethod:
             x_start = x_end
             x_end = x_next
             counter += 1
-            if abs(f(x_next)) < self.error:
+            distance = abs(f(x_next))
+            if distance < self.error:
                 return x_next
+            print(f"Chord method iteration: {counter}. Distance: {distance}")
         raise RuntimeError("The chord method does not converge")

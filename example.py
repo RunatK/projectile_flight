@@ -1,7 +1,6 @@
 import numpy as np
 
-from src.projectile_flight import ProjectileFlight
-from matplotlib import pyplot as plt
+from src.direct import ProjectileFlightDirect
 
 
 g = 9.8
@@ -14,7 +13,7 @@ def function(t: list[float], y: list[float]):
 
 
 def surface(x: float):
-    return np.cos(x)
+    return x / 2
 
 
 if __name__ == "__main__":
@@ -23,14 +22,16 @@ if __name__ == "__main__":
     theta = np.pi/4
     v_0 = np.sqrt(2*K/m)
     y0 = [0.0, surface(0.0), v_0*np.cos(theta), v_0*np.sin(theta)]
-    t = np.linspace(0, 10, 1001)
-    h = t[1] - t[0]
-    project_flight = ProjectileFlight(surface, h)
+    t = 0
+    h = 10**(-2)
+    project_flight = ProjectileFlightDirect(surface, h)
     result = project_flight.run(
         f = function,
         y_start = y0,
-        t = t
+        t_start = t,
+        h = h
     )
     x_1_result = project_flight.get_polynomial_value_x1(result)
     x_2_result = project_flight.get_polynomial_value_x2(result)
     print(f"t result: {result}. x1 result: {x_1_result}. x2 result {x_2_result}")
+    project_flight.draw()
