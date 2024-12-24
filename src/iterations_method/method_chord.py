@@ -2,9 +2,9 @@ from typing import Callable
 
 
 class ChordMethod:
-    def __init__(self, error: float):
+    def __init__(self, error: float, max_iter = 10000):
         self.error = error
-        self.max_iter = 10000
+        self.max_iter = max_iter
     
     def run(self, start: float, end: float , f: Callable[[float], float]):
         x_start = start

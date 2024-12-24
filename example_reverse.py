@@ -11,13 +11,18 @@ def ode(t: list[float], y: tuple[float, float, float, float]):
 
 
 def surface(x: float):
-    return np.cos(x)
+    return np.cos(x) + 2
 
 
 if __name__ == "__main__":
     t = 0
+    x_1 = 18
     projectile = ProjectileFlightReverse(surface)
-    projectile.run(
+    results = projectile.run(
         f = ode,
-        t_start = t
+        t_start = t,
+        x_1 = x_1
     )
+    print(f'Для x1 = {x_1}')
+    for result in results:
+        print(f'Угол {result}')
