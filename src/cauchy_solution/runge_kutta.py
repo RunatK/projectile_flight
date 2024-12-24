@@ -64,3 +64,22 @@ class RungeKutta4:
                 flag = False
             counter += 1
         return flag
+    
+    def k4_test(
+            self,
+            f: Callable[[Iterable[float], Iterable[float]], Iterable[float]], 
+            y_start: Iterable[float], 
+            t: list[float]
+        ) -> bool:
+        n = len(t)
+        self.f_result = np.zeros((n, len(y_start)))
+        self.f_result[0] = y_start
+        for i in range(n - 1):
+            h = t[i+1] - t[i]
+            k1 = f(t[i], self.f_result[i])
+            k2 = f(t[i]+h/2., self.f_result[i]+k1*h/2.)
+            k3 = f(t[i]+h/2., self.f_result[i]+k2*h/2.)
+            k4 = f(t[i]+h, self.f_result[i]+k3*h)
+            self.f_result[i+1] = (self.f_result[i] + (k1 + 2 * k2 + 2 * k3 + k4)*(h / 6.))
+        self.t_result = t
+        return True

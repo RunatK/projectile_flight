@@ -55,3 +55,26 @@ def runge_kutta_calc_result_near():
                 break
             max_error = max(max_error, abs(f_result_1[i][1] - f_result_2[i*10][1]))
         assert max_error < err
+
+def runge_kutta_test():
+    err = 10**(-2)
+    runge_kutta = RungeKutta4()
+    K = 10
+    m = 1
+    theta = np.pi/4
+    v_0 = np.sqrt(2*K/m)
+    y0 = [0.0, surface(0.0), v_0*np.cos(theta), v_0*np.sin(theta)]
+    t = np.linspace(0, 10, 51)
+    runge_kutta.k4_test(function, y0, t)
+    f_result_1 = runge_kutta.f_result
+    t_result_1 = runge_kutta.t_result
+    t = np.linspace(0, 10, 501)
+    runge_kutta.k4_test(function, y0, t)
+    f_result_2 = runge_kutta.f_result
+    t_result_2 = runge_kutta.t_result
+    t = np.linspace(0, 10, 5001)
+    runge_kutta.k4_test(function, y0, t)
+    f_result_3 = runge_kutta.f_result
+    t_result_3 = runge_kutta.t_result
+    assert np.linalg.norm(f_result_3[-1] - f_result_1[-1])/(t_result_1[1] - t_result_1[0])**4 < err
+    assert np.linalg.norm(f_result_3[-1] - f_result_2[-1])/(t_result_2[1] - t_result_2[0])**4 < err
