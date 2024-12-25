@@ -3,7 +3,7 @@ from typing import Callable, Iterable, Generator
 from matplotlib import pyplot as plt
 import numpy as np
 
-from .iterations_method.method_chord import ChordMethod
+from .iterations_method.method_secant import SecantMethod
 from .direct import ProjectileFlightDirect
 from .dto.theta_interval import ThetaInterval
 
@@ -23,7 +23,7 @@ class ProjectileFlightReverse:
         else:
             self.v_0 = v_0
         self.max_iter = 50
-        self.chord_method = ChordMethod(error, max_iter = 50)
+        self.chord_method = SecantMethod(error, max_iter = 50)
         self.direct = ProjectileFlightDirect(surface, error)
 
     def run(
@@ -35,7 +35,8 @@ class ProjectileFlightReverse:
         ) -> float:
         thetas = np.linspace(0, np.pi/2, 90)
         thetas_results = [(result[2], result[0]) for result in self._run_thetas_calc(f, t_start, thetas, h)]
-        # plt.scatter(results[:, 1], results[:, 0], s=0.9)
+        # thetas_results = np.array(thetas_results)
+        # plt.scatter(thetas_results[:, 1], thetas_results[:, 0], s=0.9)
         # plt.xlabel('theta')
         # plt.ylabel('x1')
         # plt.show()
@@ -98,29 +99,23 @@ class ProjectileFlightReverse:
     def get_y_0(self, theta: float) -> tuple[float, float, float, float]:
         return (0.0, self.surface(0.0), self.v_0*np.cos(theta), self.v_0*np.sin(theta))
     
-    # def __secant_obratnya(
-    #         self,
-    #         f = 
-    #         theta_interval: ThetaInterval,
-    #         max_iter: int, 
-    #         x_1: float
-    #     ):
-    #     counter = 1
-    #     f1 = self._direct_run(theta_interval.theta1)[1] - x_1
-    #     f2 = self._run_thetas_calc(theta_interval.theta2)[1] - x_1
-    #     t2 = t0 - (t1 - t0) * (f1 - x1) / (f2 - f1)
-    #     while counter < :
-    #         f1 = self._run_thetas_calc(t0)[1] - x1
-    #         f2 = self._run_thetas_calc(t1)[1] - x1
-    #         if f1 == f2:
-    #             print('Деление на ноль')
-    #             break
-    #         t2 = t0 - (t1-t0)*(f1)/(f2 - f1)
-    #         t0 = t1
-    #         t1 = t2
-    #         step = step + 1
-    #         if step > N:
-    #             print('Не сходится метод секущих')
-    #             break
-    #         condition = abs(solve(t2)[1] - x1) > e
-    #     return t2, step;
+    def draw(
+            self, 
+            f: Callable[[Iterable[float], Iterable[float]], Iterable[float]], 
+            t_start: float,
+            thetas: list[float],
+            h: float = 10**(-2)
+        ):
+        for theta in thetas:
+            y_start = self.get_y_0(theta)
+            t = self.direct.run(
+                f = f,
+                y_start = y_start,
+                t_start = t_start,
+                h = h
+            )
+            plt.plot(self.direct.runge_kutta.f_result[:, 0], self.direct.runge_kutta.f_result[:, 1], 'g', label=f'Полет снаряда {theta}')
+        plt.plot(self.direct.runge_kutta.f_result[:, 0], self.surface(self.direct.runge_kutta.f_result[:, 0]), 'b', label='Плоскость')
+        plt.xlabel('x1')
+        plt.ylabel('x2')
+        plt.show()

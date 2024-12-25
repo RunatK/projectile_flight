@@ -13,13 +13,13 @@ def ode(t: list[float], y: tuple[float, float, float, float]):
 
 
 def surface(x: float):
-    return x / 2
+    return np.cos(x) + 2
 
 
 if __name__ == "__main__":
-    K = 10
+    K = 100
     m = 1
-    theta = 0.75
+    theta = 0.39105384746464256
     v_0 = np.sqrt(2*K/m)
     y0 = [0.0, surface(0.0), v_0*np.cos(theta), v_0*np.sin(theta)]
     t = 0
@@ -35,4 +35,4 @@ if __name__ == "__main__":
     x_1_result = project_flight.get_polynomial_value_x1(result)
     x_2_result = project_flight.get_polynomial_value_x2(result)
     print(f"t result: {result}. x1 result: {x_1_result}. x2 result {x_2_result}")
-    project_flight.draw()
+    project_flight.draw(result)

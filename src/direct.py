@@ -5,14 +5,14 @@ import numpy as np
 
 from .interpolation.hermite_polynomial import HermitePolynomial
 from .cauchy_solution.runge_kutta import RungeKutta4
-from .iterations_method.method_chord import ChordMethod
+from .iterations_method.method_secant import SecantMethod
 
 
 class ProjectileFlightDirect:
     def __init__(self, surface: Callable[[float], float], error: float = 10**(-4)):
         self.polynamial = HermitePolynomial()
         self.runge_kutta = RungeKutta4()
-        self.chord_method = ChordMethod(error)
+        self.chord_method = SecantMethod(error)
         self.surface = surface
         self.t_between: tuple[float, float] | None = None
         self.point_1_x1: tuple[float, float, float, float] | None = None
@@ -73,11 +73,14 @@ class ProjectileFlightDirect:
             raise ValueError(f"t must be between {self.t_between[0]} and {self.t_between[1]}. t value: {t}")
         return self.polynamial.run(t, self.point_1_x1, self.point_2_x1)
     
-    def draw(self):
-        t = np.linspace(self.t_between[0], self.t_between[1], 10)
+    def draw(self, t: float):
+        t_hermit = np.linspace(self.t_between[0], self.t_between[1], 10)
+        x_1 = self.get_polynomial_value_x1(t)
+        x_2 = self.get_polynomial_value_x2(t)
         plt.plot(self.runge_kutta.f_result[:, 0], self.runge_kutta.f_result[:, 1], 'g', label='Полет снаряда')
         plt.plot(self.runge_kutta.f_result[:, 0], self.surface(self.runge_kutta.f_result[:, 0]), 'b', label='Плоскость')
-        plt.plot(list(map(self.get_polynomial_value_x1, t)), list(map(self.get_polynomial_value_x2, t)), 'r', label='Эрмит')
+        plt.plot(list(map(self.get_polynomial_value_x1, t_hermit)), list(map(self.get_polynomial_value_x2, t_hermit)), 'r', label='Эрмит')
+        plt.plot(x_1, x_2, 'ro', color='y', label='Решение')
         plt.legend(loc='best')
         plt.xlabel('x1')
         plt.ylabel('x2')

@@ -1,7 +1,7 @@
 from typing import Callable
 
 
-class ChordMethod:
+class SecantMethod:
     def __init__(self, error: float, max_iter = 10000):
         self.error = error
         self.max_iter = max_iter
